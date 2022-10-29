@@ -127,7 +127,9 @@ class AlgorithmController extends Controller
             ->where('rule_confidence', '=', $rule->confidence)
             ->where('rule_support', '=', $rule->support)
             ->where('month', '=', $month)->first();
-        $transaction = Transaction::with('product', 'transactionList')->whereRelation('transactionList', DB::raw('year(date_invoice)'), '<=', $year)->whereRelation('transactionList', DB::raw('month(date_invoice)'), '<=', $month)->get();
+        $transaction = Transaction::with('product', 'transactionList')
+            ->whereRelation('transactionList', DB::raw('year(date_invoice)'), '<=', $year)
+            ->whereRelation('transactionList', DB::raw('month(date_invoice)'), '<=', $month)->get();
         if (empty($assocExist) && $rule && $transaction) {
             associationRuleLogs::create(
                 [
