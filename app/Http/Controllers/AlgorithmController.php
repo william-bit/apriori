@@ -130,6 +130,7 @@ class AlgorithmController extends Controller
         $transaction = Transaction::with('product', 'transactionList')
             ->whereRelation('transactionList', DB::raw('year(date_invoice)'), '<=', $year)
             ->whereRelation('transactionList', DB::raw('month(date_invoice)'), '<=', $month)->get();
+        dd($transaction);
         if (empty($assocExist) && $rule && $transaction) {
             associationRuleLogs::create(
                 [
@@ -178,5 +179,13 @@ class AlgorithmController extends Controller
                 'unit' => 0,
             ]);
         }
+    }
+    public function eoq()
+    {
+        return [];
+    }
+    public function movingAverage()
+    {
+        return [];
     }
 }

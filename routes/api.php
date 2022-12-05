@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/rule/get-status', [RuleController::class, 'getStatus'])->name('apriori.getStatus');
         Route::get('/transaction/get-data', [TransactionController::class, 'getData'])->name('transaction.data');
         Route::get('/product/get-data', [ProductController::class, 'getData'])->name('product.data');
+        Route::get('/eoq/get-data', [AlgorithmController::class, 'eoq'])->name('product.data');
+        Route::get('/moving/get-data', [AlgorithmController::class, 'movingAverage'])->name('product.data');
         Route::get('/product/get-data-rank', [ProductController::class, 'getDataMost'])->name('product.data');
         Route::post('/product', [ProductController::class, 'store'])->name('product.store');
         Route::post('/product/destroy', [ProductController::class, 'destroy'])->name('product.destroy');
