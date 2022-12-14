@@ -25,6 +25,7 @@ class TransactionController extends Controller
         $data = Excel::toArray(new TransactionImport(), request()->file('myFile'));
         $productFailed = [];
         if (!empty($data[0])) {
+            $insertProduct = [];
             foreach ($data[0] as $datum) {
                 $productId = Product::where('product_code', '=', $datum[2])->first();
                 if ($productId) {
@@ -36,16 +37,18 @@ class TransactionController extends Controller
                         'no_invoice' => $datum[1],
                         'total' => 0
                     ]);
-                    Transaction::create([
-                        'quantity' => $datum[4],
-                        'price' => $datum[5],
-                        'product_id' => $productId->id,
-                        'transaction_list_id' => $idTransactionList->id
-                    ]);
+                    $insertProduct[] =
+                        ([
+                            'quantity' => $datum[4],
+                            'price' => $datum[5],
+                            'product_id' => $productId->id,
+                            'transaction_list_id' => $idTransactionList->id
+                        ]);
                 } else {
                     $productFailed[] = $datum[2];
                 }
             }
+            Transaction::insert($insertProduct);
             $this->updateTotal();
         }
         return $productFailed;
