@@ -26,20 +26,25 @@ class TransactionController extends Controller
         $productFailed = [];
         if (!empty($data[0])) {
             foreach ($data[0] as $datum) {
-                $date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($datum[0]));
-                $idTransactionList = TransactionList::firstOrCreate([
-                    'no_invoice' => $datum[1],
-                ], [
-                    'date_invoice' => $date,
-                    'no_invoice' => $datum[1],
-                    'total' => 0
-                ]);
-                Transaction::create([
-                    'quantity' => $datum[4],
-                    'price' => $datum[5],
-                    'product_id' => $datum[2],
-                    'transaction_list_id' => $idTransactionList->id
-                ]);
+                $productId = Product::where('product_code', '=', $datum[2])->first();
+                if ($productId) {
+                    $date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($datum[0]));
+                    $idTransactionList = TransactionList::firstOrCreate([
+                        'no_invoice' => $datum[1],
+                    ], [
+                        'date_invoice' => $date,
+                        'no_invoice' => $datum[1],
+                        'total' => 0
+                    ]);
+                    Transaction::create([
+                        'quantity' => $datum[4],
+                        'price' => $datum[5],
+                        'product_id' => $productId->id,
+                        'transaction_list_id' => $idTransactionList->id
+                    ]);
+                } else {
+                    $productFailed[] = $datum[2];
+                }
             }
             $this->updateTotal();
         }

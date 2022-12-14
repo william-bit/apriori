@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/algorithm/test', [AlgorithmController::class, 'index'])->name('algorithm.start');
+Route::get('/algorithm', [AlgorithmController::class, 'index'])->name('algorithm.start');
 Route::get('/', function () {
     return view('welcome');
 });

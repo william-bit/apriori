@@ -51,12 +51,8 @@ class AlgorithmController extends Controller
     public function getData(Request $request)
     {
         $rule = Rule::find(1);
-        $year = $request->year;
-        $month = $request->month;
-        $dataAssociation = AssociationRule::where('year', '=', $year)
-            ->where('rule_confidence', '=', $rule->confidence)
-            ->where('rule_support', '=', $rule->support)
-            ->where('month', '=', $month)->paginate();
+        $dataAssociation = AssociationRule::where('rule_confidence', '=', $rule->confidence)
+            ->where('rule_support', '=', $rule->support)->paginate();
 
         $this->getProduct();
         foreach ($dataAssociation as &$datum) {
@@ -74,10 +70,9 @@ class AlgorithmController extends Controller
         }
         return [
             "resource" => $dataAssociation,
-            "total" => AssociationRule::where('year', '=', $year)
-                ->where('rule_confidence', '=', $rule->confidence)
+            "total" => AssociationRule::where('rule_confidence', '=', $rule->confidence)
                 ->where('rule_support', '=', $rule->support)
-                ->where('month', '=', $month)->count()
+                ->count()
         ];
     }
     /**
@@ -121,26 +116,8 @@ class AlgorithmController extends Controller
     public function index(Request $request)
     {
         $rule = Rule::find(1);
-        $year = $request->year;
-        $month = $request->month;
-        $assocExist = associationRuleLogs::where('year', '=', $year)
-            ->where('rule_confidence', '=', $rule->confidence)
-            ->where('rule_support', '=', $rule->support)
-            ->where('month', '=', $month)->first();
-        $transaction = Transaction::with('product', 'transactionList')
-            ->whereRelation('transactionList', DB::raw('year(date_invoice)'), '<=', $year)
-            ->whereRelation('transactionList', DB::raw('month(date_invoice)'), '<=', $month)->get();
-        dd($transaction);
-        if (empty($assocExist) && $rule && $transaction) {
-            associationRuleLogs::create(
-                [
-                    'rule_confidence' => $rule->confidence,
-                    'rule_support' => $rule->support,
-                    'month' => $month,
-                    'year' => $year,
-
-                ]
-            );
+        $transaction = Transaction::with('product', 'transactionList')->get();
+        if ($rule && $transaction) {
             ['sample' => $samples, 'dataProducts' => $dataProducts] = $this->transform($transaction);
             // AssociationRule::truncate();
             $labels  = [];
@@ -148,6 +125,7 @@ class AlgorithmController extends Controller
             $associator = new Apriori($rule->support, $rule->confidence);
             $associator->train($samples, $labels);
             $data = $associator->getRules();
+            AssociationRule::truncate();
             foreach ($data as $datum) {
                 AssociationRule::create(
                     [
@@ -159,8 +137,8 @@ class AlgorithmController extends Controller
                         'support' => $datum['support'],
                         'rule_confidence' => $rule->confidence,
                         'rule_support' => $rule->support,
-                        'month' => $month,
-                        'year' => $year,
+                        'month' => 0,
+                        'year' => 0,
                     ]
                 );
             }

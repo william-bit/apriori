@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::middleware('auth:sanctum')->group(
     function () {
+        Route::post('/algorithm', [AlgorithmController::class, 'index'])->name('algorithm.start');
         Route::post('/rule', [RuleController::class, 'index'])->name('apriori');
         Route::get('/rule/get-status', [RuleController::class, 'getStatus'])->name('apriori.getStatus');
         Route::get('/transaction/get-data', [TransactionController::class, 'getData'])->name('transaction.data');
@@ -39,7 +40,6 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/algorithm/get-data', [AlgorithmController::class, 'getData'])->name('algorithm.data');
         Route::post('/transaction', [TransactionController::class, 'index'])->name('transaction');
         Route::post('/product/import', [ProductController::class, 'import'])->name('transaction');
-        Route::get('/algorithm/start', [AlgorithmController::class, 'index'])->name('algorithm.start');
         Route::get('/graphic', [TransactionController::class, 'graphic'])->name('grapic.start');
     }
 );
