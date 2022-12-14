@@ -60,11 +60,13 @@ class AlgorithmController extends Controller
             $datum['antecedentConcat'] = implode(',', $this->changeCodeProducts(json_decode($datum->antecedent)));
             $datum['description'] =
                 [
-                    ['word' => "Jika Customer membeli produk "],
+                    ['word' => "Jika membeli "],
                     ['word' => $datum['antecedentConcat'], 'font' => 'bold'],
-                    ['word' => " dibeli, maka persentase produk "],
+                    ['word' => " maka akan membeli "],
                     ['word' => $datum['consequentConcat'], 'font' => 'bold'],
-                    ['word' => " adalah "],
+                    ['word' => " dengan nilai support "],
+                    ['word' => round($datum['support'] * 100, 2) . "%", 'font' => 'bold'],
+                    ['word' => " dan nilai confidence "],
                     ['word' => round($datum['confidence'] * 100, 2) . "%", 'font' => 'bold']
                 ];
         }
