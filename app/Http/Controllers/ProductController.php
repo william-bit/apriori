@@ -69,7 +69,6 @@ class ProductController extends Controller
     }
     public function import(Request $request)
     {
-        Product::truncate();
         Excel::import(new ProductImport($request), request()->file('myFile'));
         return true;
     }
