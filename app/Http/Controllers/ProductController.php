@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProductImport;
 use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -29,7 +31,13 @@ class ProductController extends Controller
     {
         $from = $request->from;
         $until = $request->until;
-        $section = Transaction::with('product')->select('product_id', DB::raw('count(*) as total'))->whereRelation('transactionList', 'date_invoice', '<', $until)->whereRelation('transactionList', 'date_invoice', '>', $from)->groupBy('product_id')->orderby('total', 'desc')->paginate();
+        $section = Transaction::with('product')
+            ->select('product_id', DB::raw('count(*) as total'))
+            ->whereRelation('transactionList', 'date_invoice', '<', $until)
+            ->whereRelation('transactionList', 'date_invoice', '>', $from)
+            ->groupBy('product_id')
+            ->orderby('total', 'desc')
+            ->paginate();
         foreach ($section as &$value) {
             $value->product_name = $value->product->product_name;
             $value->product_code = $value->product->product_code;
@@ -58,5 +66,11 @@ class ProductController extends Controller
             'price' => $request->price
         ]);
         return $product;
+    }
+    public function import(Request $request)
+    {
+        Product::truncate();
+        Excel::import(new ProductImport($request), request()->file('myFile'));
+        return true;
     }
 }

@@ -170,14 +170,15 @@ class AlgorithmController extends Controller
     }
     public function autoImportProduct($dataProducts)
     {
-        Product::truncate();
         foreach ($dataProducts as $productCode => $productName) {
-            Product::create([
-                'product_name' => $productName,
-                'product_code' => $productCode,
-                'price' => 0,
-                'unit' => 0,
-            ]);
+            if (!in_array($productCode, array_column($this->product, 'product_code'))) {
+                Product::create([
+                    'product_name' => $productName,
+                    'product_code' => $productCode,
+                    'price' => 0,
+                    'unit' => 0,
+                ]);
+            }
         }
     }
     public function eoq()

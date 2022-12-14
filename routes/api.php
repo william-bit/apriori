@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlgorithmController;
+use App\Http\Controllers\EOQController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RuleController;
 use App\Http\Controllers\TransactionController;
@@ -30,11 +31,14 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/product/get-data', [ProductController::class, 'getData'])->name('product.data');
         Route::get('/eoq/get-data', [AlgorithmController::class, 'eoq'])->name('product.data');
         Route::get('/moving/get-data', [AlgorithmController::class, 'movingAverage'])->name('product.data');
+        Route::post('/eoq/start', [EOQController::class, 'store'])->name('eoq.start');
+        Route::post('/moving/start', [MovingAverageController::class, 'store'])->name('moving.start');
         Route::get('/product/get-data-rank', [ProductController::class, 'getDataMost'])->name('product.data');
         Route::post('/product', [ProductController::class, 'store'])->name('product.store');
         Route::post('/product/destroy', [ProductController::class, 'destroy'])->name('product.destroy');
         Route::get('/algorithm/get-data', [AlgorithmController::class, 'getData'])->name('algorithm.data');
         Route::post('/transaction', [TransactionController::class, 'index'])->name('transaction');
+        Route::post('/product/import', [ProductController::class, 'import'])->name('transaction');
         Route::get('/algorithm/start', [AlgorithmController::class, 'index'])->name('algorithm.start');
         Route::get('/graphic', [TransactionController::class, 'graphic'])->name('grapic.start');
     }
