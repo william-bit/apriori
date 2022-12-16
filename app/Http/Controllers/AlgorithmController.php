@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssociationRule;
-use App\Models\associationRuleLogs;
 use App\Models\Product;
 use App\Models\Rule;
 use App\Models\Transaction;
-use App\Models\TransactionList;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Phpml\Association\Apriori;
 
 class AlgorithmController extends Controller
@@ -121,7 +118,6 @@ class AlgorithmController extends Controller
         $transaction = Transaction::with('product', 'transactionList')->get();
         if ($rule && $transaction) {
             ['sample' => $samples, 'dataProducts' => $dataProducts] = $this->transform($transaction);
-            // AssociationRule::truncate();
             $labels  = [];
 
             $associator = new Apriori($rule->support, $rule->confidence);
@@ -162,10 +158,6 @@ class AlgorithmController extends Controller
         }
     }
     public function eoq()
-    {
-        return [];
-    }
-    public function movingAverage()
     {
         return [];
     }

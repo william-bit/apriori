@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AlgorithmController;
+use App\Http\Controllers\MovingAverageController;
+use App\System\MovingAverage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/algorithm', [AlgorithmController::class, 'index'])->name('algorithm.start');
+Route::get('/test', [MovingAverageController::class, 'store'])->name('algorithm.start');
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/test', [AlgorithmController::class, 'getData'])->name('algorithm.data');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

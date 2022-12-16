@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEOQControllersTable extends Migration
+class CreateMovingAverageTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateEOQControllersTable extends Migration
      */
     public function up()
     {
-        Schema::create('e_o_q_controllers', function (Blueprint $table) {
+        Schema::create('moving_averages', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id');
+            $table->string('month');
+            $table->double('moving_average');
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateEOQControllersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('e_o_q_controllers');
+        Schema::dropIfExists('moving_averages');
     }
 }
