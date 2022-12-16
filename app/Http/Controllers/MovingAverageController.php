@@ -19,7 +19,7 @@ class MovingAverageController extends Controller
             ->groupBy('month')
             ->get();
         $movingAverage = new MovingAverage($transaction);
-        $data = $movingAverage->start($transaction);
+        $data = $movingAverage->start($transaction, $request->month);
         ModelsMovingAverage::truncate();
         foreach ($data as $arrMovingAverage) {
             foreach ($arrMovingAverage as $item) {
@@ -28,10 +28,12 @@ class MovingAverageController extends Controller
                         'month' => $item['month'],
                         'product_id' => $item['product_id'],
                         'moving_average' => $item['moving_average'],
+                        'calculate' => "(" . implode('+', $item['moving']) . ") ÷ " . count($item['moving']),
                     ]);
                 }
             }
         }
+        return $request->month;
     }
     public function index(Request $request)
     {        /* A query to get all data from product table and order by id descending. */

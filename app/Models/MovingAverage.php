@@ -14,6 +14,7 @@ class MovingAverage extends Model
         'month',
         'product_id',
         'moving_average',
+        'calculate'
     ];
     public function getCreatedAtAttribute($value)
     {
