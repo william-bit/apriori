@@ -14,6 +14,7 @@ class EOQ extends Model
     protected $fillable = [
         'product_id',
         'eoq',
+        'moving_average'
     ];
     public function getCreatedAtAttribute($value)
     {

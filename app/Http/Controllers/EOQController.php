@@ -16,9 +16,11 @@ class EOQController extends Controller
         $maxMonth = MovingAverage::orderBy('month', 'desc')->first();
         $listMovingAverage = MovingAverage::with('product')->where('month', '=', $maxMonth->month)->get();
         $eoq = new EOQ();
+        ModelsEOQ::truncate();
         foreach ($listMovingAverage as $item) {
             ModelsEOQ::create([
                 'product_id' => $item->product->id,
+                'moving_average' => $item->moving_average,
                 'eoq' => ceil($eoq->start($item->moving_average, $item->product->price, $item->product->upkeep))
             ]);
         }
@@ -34,9 +36,11 @@ class EOQController extends Controller
         }
         foreach ($data as &$datum) {
             if ($datum->eoq) {
-                $datum['eoq_data'] = $datum->eoq->eoq . " kali";
+                $datum['eoq_data'] = $datum->eoq->eoq . " Pcs";
+                $datum['frequency'] = ceil($datum->eoq->moving_average / $datum->eoq->eoq)  . " Kali";
             } else {
-                $datum['eoq_data'] = '0 Kali';
+                $datum['eoq_data'] = '0 Pcs';
+                $datum['frequency'] = "0 Kali";
             }
             $datum['price'] = "Rp." . number_format($datum->price);
         }
