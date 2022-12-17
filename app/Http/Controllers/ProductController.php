@@ -21,6 +21,7 @@ class ProductController extends Controller
         }
         foreach ($data as &$datum) {
             $datum['price'] = "Rp." . number_format($datum->price);
+            $datum['upkeep'] = "Rp." . number_format($datum->upkeep);
         }
         return [
             "resource" => $data,

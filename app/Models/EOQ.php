@@ -6,17 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class EOQ extends Model
 {
     use HasFactory;
+    protected $table = 'EOQ';
 
     protected $fillable = [
-        'product_name',
-        'product_code',
-        'user_id',
-        'price',
-        'upkeep',
-        'unit',
+        'product_id',
+        'eoq',
     ];
     public function getCreatedAtAttribute($value)
     {
@@ -28,8 +25,8 @@ class Product extends Model
     {
         return $this->getCreatedAtAttribute($value);
     }
-    public function eoq()
+    public function product()
     {
-        return $this->hasOne(EOQ::class);
+        return $this->belongsTo(Product::class);
     }
 }

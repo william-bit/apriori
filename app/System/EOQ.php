@@ -15,8 +15,8 @@ class EOQ
      *
      * @return int The square root of the sum of the booking fee, sum of the ingredients, upkeep, and cost.
      */
-    public function start($bookingFee, $sumOfIngredient, $cost, $upkeep)
+    public function start($movingAverage, $productPrice, $upkeep)
     {
-        return sqrt((2 * $bookingFee * $sumOfIngredient) / $upkeep * $cost);
+        return sqrt((2 * $movingAverage * $productPrice) / $upkeep);
     }
 }

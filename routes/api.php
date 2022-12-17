@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/rule/get-status', [RuleController::class, 'getStatus'])->name('apriori.getStatus');
         Route::get('/transaction/get-data', [TransactionController::class, 'getData'])->name('transaction.data');
         Route::get('/product/get-data', [ProductController::class, 'getData'])->name('product.data');
-        Route::get('/eoq/get-data', [AlgorithmController::class, 'eoq'])->name('product.data');
+        Route::get('/eoq/get-data', [EOQController::class, 'index'])->name('product.data');
         Route::get('/moving/get-data', [MovingAverageController::class, 'index'])->name('product.data');
         Route::get('/moving/detail/get-data', [MovingAverageController::class, 'show'])->name('product.data');
         Route::post('/eoq/start', [EOQController::class, 'store'])->name('eoq.start');

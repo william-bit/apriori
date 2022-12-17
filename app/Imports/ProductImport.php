@@ -29,6 +29,7 @@ class ProductImport implements ToModel, WithStartRow
             'product_code' => $row[1],
             'user_id' => $this->request->user()->id,
             'price' => $row[2],
+            'upkeep' => $row[3],
             'unit' => 'pcs'
         ]);
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlgorithmController;
+use App\Http\Controllers\EOQController;
 use App\Http\Controllers\MovingAverageController;
 use App\System\MovingAverage;
 use Illuminate\Support\Facades\Artisan;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', [MovingAverageController::class, 'store'])->name('algorithm.start');
+Route::get('/test', [EOQController::class, 'store'])->name('algorithm.start');
 Route::get('/', function () {
     return view('welcome');
 });
