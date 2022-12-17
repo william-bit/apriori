@@ -70,7 +70,19 @@ class ProductController extends Controller
     }
     public function import(Request $request)
     {
-        Excel::import(new ProductImport($request), request()->file('myFile'));
-        return true;
+        $product = Excel::toArray(new ProductImport($request), request()->file('myFile'));
+        foreach ($product[0] as $item) {
+            Product::updateOrCreate([
+                'product_code' => $item[1]
+            ], [
+                'product_name' => $item[0],
+                'product_code' => $item[1],
+                'user_id' => $request->user()->id,
+                'price' => $item[2],
+                'upkeep' => $item[3],
+                'unit' => 'pcs'
+            ]);
+        };
+        return $product;
     }
 }
