@@ -33,7 +33,11 @@ class EOQController extends Controller
             $data = Product::orderby('id', 'desc')->paginate();
         }
         foreach ($data as &$datum) {
-            $datum['eoq_data'] = $datum->eoq->eoq . " kali";
+            if ($datum->eoq) {
+                $datum['eoq_data'] = $datum->eoq->eoq . " kali";
+            } else {
+                $datum['eoq_data'] = '0 Kali';
+            }
             $datum['price'] = "Rp." . number_format($datum->price);
         }
         return [
