@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssociationRule;
 use App\Models\EOQ as ModelsEOQ;
 use App\Models\MovingAverage;
 use App\Models\Product;
@@ -29,10 +30,23 @@ class EOQController extends Controller
     public function index(Request $request)
     {
         /* A query to get all data from product table and order by id descending. */
+        $AssociationRule = AssociationRule::get();
+        $products = [];
+        foreach ($AssociationRule as $item) {
+            $consequent = json_decode($item->consequent);
+            $antecedent = json_decode($item->antecedent);
+            $productAssoc = array_merge($antecedent, $consequent);
+            $products = array_merge($productAssoc, $products);
+        }
         if ($request->filter) {
-            $data = Product::where("product_name", 'like', "%{$request->filter}%")->orderby('id', 'desc')->paginate();
+            $data = Product::where("product_name", 'like', "%{$request->filter}%")
+                ->whereIn('product_code', array_unique($products))
+                ->orderby('id', 'desc')
+                ->paginate();
         } else {
-            $data = Product::orderby('id', 'desc')->paginate();
+            $data = Product::orderby('id', 'desc')
+                ->whereIn('product_code', array_unique($products))
+                ->paginate();
         }
         foreach ($data as &$datum) {
             if ($datum->eoq) {

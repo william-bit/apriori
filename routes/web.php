@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', [EOQController::class, 'store'])->name('algorithm.start');
+Route::get('/test', [EOQController::class, 'index'])->name('algorithm.start');
 Route::get('/', function () {
     return view('welcome');
 });
