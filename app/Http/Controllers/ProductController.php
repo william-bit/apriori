@@ -57,14 +57,16 @@ class ProductController extends Controller
         $this->validate($request, [
             'name' => 'required|unique:products,product_name',
             'code' => 'required|unique:products,product_code',
-            'price' => 'required|numeric'
+            'price' => 'required|numeric',
+            'upkeep' => 'required|numeric'
         ]);
         $product = Product::create([
             'product_name' => $request->name,
             'product_code' => $request->code,
             'unit' => 0,
             'user_id' => $request->user()->id,
-            'price' => $request->price
+            'price' => $request->price,
+            'upkeep' => $request->upkeep
         ]);
         return $product;
     }
