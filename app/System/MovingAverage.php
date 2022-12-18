@@ -21,7 +21,7 @@ class MovingAverage
             foreach ($stock as $month => $item) {
                 $movingAverage = $this->makeMovingData($stock, $month);
                 $moving = array_slice($movingAverage, 0, $perMonth, true);
-                if (count($moving) == $perMonth) {
+                if (count($moving) == $perMonth && $perMonth) {
                     $stock[$month]['moving'] =  $moving;
                     $stock[$month]['moving_average'] = array_sum($moving) / count($moving);
                 }
@@ -37,6 +37,7 @@ class MovingAverage
         $moving = array_slice($movingAverage, 0, $perMonth, true);
         $newStock = [];
         $newStock['moving'] =  $moving;
+        $newStock['product_sum'] = 0;
         $newStock['month'] =  $month + 1;
         $newStock['product_id'] =  $productId;
         $newStock['moving_average'] = array_sum($moving) / count($moving);

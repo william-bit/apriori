@@ -27,8 +27,9 @@ class MovingAverageController extends Controller
                     ModelsMovingAverage::create([
                         'month' => $item['month'],
                         'product_id' => $item['product_id'],
+                        'product_sum' => $item['product_sum'],
                         'moving_average' => $item['moving_average'],
-                        'calculate' => "(" . implode('+', $item['moving']) . ") ÷ " . count($item['moving']),
+                        'calculate' => "(" . implode('+', array_reverse($item['moving'])) . ") ÷ " . count($item['moving']),
                     ]);
                 }
             }
