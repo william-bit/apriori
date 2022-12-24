@@ -63,19 +63,31 @@ class TransactionController extends Controller
             $transactionList->save();
         }
     }
-    public function getData()
+    public function getData(Request $request)
     {
-        $section = Transaction::with(['product', 'transactionList'])->paginate();
-        foreach ($section as &$value) {
-            $value->no_invoice = $value->transactionList->no_invoice;
-            $value->product_name = $value->product->product_name;
-            $value->date_invoice = $value->transactionList->date_invoice;
-            $value->product_code = $value->product->product_code;
+        $section = Transaction::with(['product', 'transactionList']);
+        $from = $request->from;
+        $until = $request->until;
+        $diff = date_diff(date_create($from), date_create($until . " 23:59:59"));
+        if ($from && $until && ($diff->format("%a") + 1) <= 31) {
+            if ($from) {
+                $section = $section->whereRelation('transactionList', 'date_invoice', '>', $from);
+            }
+            if ($until) {
+                $section = $section->whereRelation('transactionList', 'date_invoice', '<=', $until . " 23:59:59");
+            }
+            $section = $section->paginate();
+            foreach ($section as &$value) {
+                $value->no_invoice = $value->transactionList->no_invoice;
+                $value->product_name = $value->product->product_name;
+                $value->date_invoice = $value->transactionList->date_invoice;
+                $value->product_code = $value->product->product_code;
+            }
+            return [
+                "resource" => $section,
+                "total" => Transaction::count()
+            ];
         }
-        return [
-            "resource" => $section,
-            "total" => Transaction::count()
-        ];
     }
     public function graphic(Request $request)
     {
