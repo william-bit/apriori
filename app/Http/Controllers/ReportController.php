@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Rule;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -136,27 +137,42 @@ class ReportController extends Controller
         ]);
         return $pdf->stream('product.pdf');
     }
-    public function transaction()
+    public function transaction(Request $request)
     {
-        $section = Transaction::with(['product', 'transactionList'])->get();
-        foreach ($section as &$value) {
-            $value->no_invoice = $value->transactionList->no_invoice;
-            $value->product_name = $value->product->product_name;
-            $value->date_invoice = $value->transactionList->date_invoice;
-            $value->product_code = $value->product->product_code;
+        $section = Transaction::with(['product', 'transactionList']);
+        $from = $request->from;
+        $until = $request->until;
+        $diff = date_diff(date_create($from), date_create($until . " 23:59:59"));
+        if ($from && $until && ($diff->format("%a") + 1) <= 31) {
+            if ($from) {
+                $section = $section->whereRelation('transactionList', 'date_invoice', '>', $from);
+            }
+            if ($until) {
+                $section = $section->whereRelation('transactionList', 'date_invoice', '<=', $until . " 23:59:59");
+            }
+            $section = $section->get();
+
+            foreach ($section as &$value) {
+                $value->no_invoice = $value->transactionList->no_invoice;
+                $value->product_name = $value->product->product_name;
+                $value->date_invoice = $value->transactionList->date_invoice;
+                $value->product_code = $value->product->product_code;
+            }
+            $pdf = Pdf::loadView('pdf', [
+                "resource" => $section,
+                "total" => Transaction::count(),
+                "title" => "Report Transaksi",
+                'table' => [
+                    ['title' => "No Invoice", 'key' => "no_invoice"],
+                    ['title' => "Tanggal invoice", 'key' => "date_invoice"],
+                    ['title' => "Nama Produk", 'key' => "product_name"],
+                    ['title' => "Kode Produk", 'key' => "product_code"],
+                ],
+            ]);
+            return $pdf->stream('transaction.pdf');
+        } else {
+            return 'Filter tidak boleh lebih dari 31 hari';
         }
-        $pdf = Pdf::loadView('pdf', [
-            "resource" => $section,
-            "total" => Transaction::count(),
-            "title" => "Report Transaksi",
-            'table' => [
-                ['title' => "No Invoice", 'key' => "no_invoice"],
-                ['title' => "Tanggal invoice", 'key' => "date_invoice"],
-                ['title' => "Nama Produk", 'key' => "product_name"],
-                ['title' => "Kode Produk", 'key' => "product_code"],
-            ],
-        ]);
-        return $pdf->stream('transaction.pdf');
     }
     public function soldProduct(Request $request)
     {
