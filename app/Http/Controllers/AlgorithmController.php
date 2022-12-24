@@ -157,8 +157,4 @@ class AlgorithmController extends Controller
             }
         }
     }
-    public function eoq()
-    {
-        return [];
-    }
 }

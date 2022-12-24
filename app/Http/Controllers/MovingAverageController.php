@@ -53,7 +53,6 @@ class MovingAverageController extends Controller
     }
     public function show(Request $request)
     {
-
         return [
             "resource" => ModelsMovingAverage::where(['product_id' => $request->id])->paginate(),
             "product" => Product::find($request->id)

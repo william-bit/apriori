@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AlgorithmController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\EOQController;
 use App\Http\Controllers\MovingAverageController;
+use App\Http\Controllers\ReportController;
 use App\System\MovingAverage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +20,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', [MovingAverageController::class, 'store'])->name('algorithm.start');
+Route::get('/example/product', [DownloadController::class, 'product'])->name('example.product');
+Route::get('/example/transaction', [DownloadController::class, 'transaction'])->name('example.transaction');
+Route::get('/pdf/eoq', [ReportController::class, 'EOQ'])->name('report.eoq');
+Route::get('/pdf/apriori', [ReportController::class, 'apriori'])->name('report.apriori');
+Route::get('/pdf/product', [ReportController::class, 'product'])->name('report.product');
+Route::get('/pdf/transaction', [ReportController::class, 'transaction'])->name('report.transaction');
+Route::get('/pdf/sold-product', [ReportController::class, 'soldProduct'])->name('report.soldProduct');
 Route::get('/', function () {
     return view('welcome');
 });
